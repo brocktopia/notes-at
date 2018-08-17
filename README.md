@@ -19,7 +19,7 @@ explanation on vue-loader, consult the [docs for vue-loader](http://vuejs.github
 * [axios](https://github.com/mzabriskie/axios)
 * [vue-googlemaps](https://github.com/Akryum/vue-googlemaps)
 * [Moment.js](https://momentjs.com/)
-* [Google API Key](https://developers.google.com/maps/documentation/javascript/get-api-key)
+* [Google API Key](https://developers.google.com/maps/documentation/javascript/get-api-key) (for Maps JavaScript API &amp; Places API for Web)
 
 ## Configuration
 
