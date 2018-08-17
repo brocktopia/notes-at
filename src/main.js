@@ -9,8 +9,7 @@ import './assets/svg/symbols.svg'
 
 Vue.use(VueGoogleMaps, {
   load: {
-    key: 'AIzaSyA5UtwICLrfguhdSuosmqiJ7YWcBrIwnK8',
-    // key: 'your-google-api-key',
+    key: 'your-google-api-key',
     libraries: 'places'
   }
 });
