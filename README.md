@@ -50,14 +50,11 @@ npm install
 # start express RESTful service layer at localhost:3030
 npm run start
 
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for development
+# build project (drop -dev for production build)
 npm run build-dev
 
-# build for production
-npm run build
+# serve with hot reload at localhost:8080
+npm run dev
 ```
 
 ## Resources
