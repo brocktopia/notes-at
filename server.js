@@ -39,7 +39,7 @@ routes(app);
 
 // Catch 404 errors
 app.use(function(req, res) {
-  res.status(404).send({url: req.originalUrl + ' not found'})
+  res.status(404).sendStatus({url: req.originalUrl + ' not found'})
 });
 
 app.listen(port);

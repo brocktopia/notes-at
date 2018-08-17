@@ -9,12 +9,16 @@ import './assets/svg/symbols.svg'
 
 Vue.use(VueGoogleMaps, {
   load: {
-    key: 'your-google-api-key',
+    key: 'AIzaSyA5UtwICLrfguhdSuosmqiJ7YWcBrIwnK8',
+    // key: 'your-google-api-key',
     libraries: 'places'
   }
 });
 
 let baseUrl = window.location.protocol + '//' + window.location.host;
+if (baseUrl.lastIndexOf(':') > 6) { // strip port # off of baseUrl
+  baseUrl = baseUrl.substr(0, baseUrl.lastIndexOf(':'));
+}
 //console.log('main.js baseUrl ['+baseUrl+']');
 
 Vue.prototype.$axios = axios.create({
