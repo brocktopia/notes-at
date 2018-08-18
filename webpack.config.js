@@ -5,8 +5,8 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 module.exports = {
   entry: './src/main.js',
   output: {
-    path: path.resolve(__dirname, './dist'),
-    publicPath: './dist/',
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '/dist/',
     filename: 'build.js'
   },
   resolve: {
@@ -84,7 +84,10 @@ module.exports = {
   performance: {
     hints: false
   },
-  devtool: '#eval-source-map'
+  devtool: '#eval-source-map',
+  plugins: [
+    new webpack.HotModuleReplacementPlugin({})
+  ]
 }
 
 if (process.env.NODE_ENV === 'production') {
