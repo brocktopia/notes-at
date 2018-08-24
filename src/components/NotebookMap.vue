@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="app-container">
 
     <header>
       <h2>{{name}}</h2>

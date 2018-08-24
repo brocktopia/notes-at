@@ -45,6 +45,14 @@ export default new VueRouter({
       name:'notebook-note-new',
       component: Notebook
     },{
+      path:'/notebook/:notebook_id/note-new-mobile',
+      name:'notebook-note-new-mobile',
+      component: Notebook
+    },{
+      path:'/notebook/:notebook_id/note-edit-mobile/:note_id',
+      name:'notebook-note-edit-mobile',
+      component: Notebook
+    },{
       path:'/notebook/:notebook_id/map',
       name:'notebook-map',
       component: Notebook

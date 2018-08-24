@@ -3,22 +3,20 @@
 
     <header>
       <h2>Notebooks</h2>
-      <svg class="icon action-icon" v-on:click="addNotebook()"><use xlink:href="./dist/symbols.svg#add-item"></use></svg>
+      <span class="button-bar">
+        <svg class="icon" v-on:click="addNotebook()"><use xlink:href="./dist/symbols.svg#add-item"></use></svg>
+      </span>
     </header>
 
     <div class="content">
       <ul class="notebooks">
-        <li v-for="notebook in notebooks" v-on:click="notebookSelect(notebook)">
-          {{notebook.name}} <span class="notebook-date">{{$moment(notebook.Created_date).format("LLLL")}}</span>
+        <li v-for="notebook in notebooks" class="list-item" v-on:click="notebookSelect(notebook)">
+          <span class="list-item-name">{{notebook.name}}</span>
+          <span class="notebook-date">{{$moment(notebook.Created_date).format("l")}}</span>
         </li>
       </ul>
       <div class="notebooks-message">{{notebooksMessage}}</div>
       <div class="loading-mask" v-if="isLoading"><span>{{loadingMessage}}</span></div>
-      <!--<NewNotebookDialog
-        v-if="showNewNotebook"
-        v-on:close="cancelNewNotebook"
-        v-on:save="saveNewNotebook"
-      />-->
     </div>
 
     <div class="navigation">
@@ -58,6 +56,7 @@
     },
 
     mounted: function() {
+      //console.log('Notebooks.mounted()');
       vm = this;
       this.$axios.get('/notebooks')
         .then(function(res) {

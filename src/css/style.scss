@@ -1,5 +1,6 @@
 * {
   box-sizing: border-box;
+  text-size-adjust: 100%;
 }
 html, body {
   margin: 0;
@@ -27,6 +28,7 @@ li {
 }
 a, .link {
   color: #42b983;
+  fill: #42b983;
   cursor: pointer;
 }
 /* component views */
@@ -37,33 +39,14 @@ a, .link {
   max-width: 640px;
   margin: 0 auto;
 }
-/* Mobile fixes */
-@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
-  .app-container {
-    max-width: 100%;
-  }
-}
 input, textarea, img {
   max-width:100%
-}
-/* Non-mobile rules */
-@media screen and (min-width: 800px) {
-  input {
-    font-size: 1em;
-    line-height: 22px;
-    padding: 0 5px;
-    font-family: monospace;
-  }
-  textarea {
-    font-size: 1em;
-    padding: 5px 5px;
-  }
 }
 /* header styles */
 header {
   background-color: #ffa22f;
   margin: 0;
-  height: 50px;
+  height: 100%;
   width: 100%;
   text-align: left;
   white-space: nowrap;
@@ -75,12 +58,16 @@ header {
     margin: 0 0 0 15px;
   }
   h2 {
-    font-size: 1.3em;
+    font-size: 1.3rem;
     line-height: 50px;
     max-width: 400px;
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    float: left;
+  }
+  label {
+    font-size: 1.2rem;
   }
   .button-bar {
     padding: 0;
@@ -93,6 +80,124 @@ header {
 h2.warn {
   color: orangered;
 }
+/* Mobile fixes */
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+  .desktop-only {
+    display: none;
+  }
+  svg.icon-tiny, img.icon-tiny {
+    display: inline-block;
+    width: 32px;
+    height: 32px;
+  }
+  svg.icon-small, img.icon-small {
+    display: inline-block;
+    width: 36px;
+    height: 36px;
+  }
+  .app-container {
+    max-width: 100%;
+    grid-template-rows: 70px auto 70px;
+    button {
+      white-space: nowrap;
+      font-size: 1.2rem;
+      &.create-notebook {
+        font-size: 1.5rem;
+      }
+    }
+    input[type=text], textarea {
+      padding-left: 5px;
+      //text-size-adjust: 150%;
+      font-size: 1rem;
+      //line-height: 30px;
+    }
+    header {
+      h2 {
+        line-height: 70px;
+        font-size: 2rem;
+        max-width: 380px;
+        margin-left: 10px;
+        float: left;
+      }
+      .button-bar {
+        .icon {
+          margin: 10px 4px;
+        }
+      }
+    }
+    .navigation {
+      line-height: 70px;
+      font-size: 1.7rem;
+    }
+    .content {
+      height: calc(100vh - 140px);
+      font-size: 1.5rem;
+      ul .list-item {
+        height: 60px;
+        line-height: 60px;
+        font-size: 1.5rem;
+      }
+      .list-item-name {
+        max-width: 75%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      &.note-edit {
+        //text-size-adjust: 130%;
+      }
+      .note-item {
+        font-size: 1.5rem;
+        .title {
+          //text-size-adjust: 150%;
+          line-height: 1.8rem;
+        }
+        .date, .note {
+          //text-size-adjust: 140%;
+          white-space: nowrap;
+        }
+        .geocoords, .place {
+          //text-size-adjust: 130%;
+          width: 50%
+        }
+      }
+      .notebook-message {
+        //text-size-adjust: 150%;
+      }
+      &.note-edit {
+        grid-template-rows: 75px 30px 35px 35px 155px auto;
+        .name {
+          label {
+            display: block;
+          }
+        }
+      }
+    }
+    .modal-header h3 {
+      //text-size-adjust: 150%;
+    }
+    &.edit {
+      font-size: 1.5rem;
+    }
+  }
+}
+/* Non-mobile rules */
+@media screen and (min-width: 800px) {
+  .mobile-only {
+    display: none;
+  }
+  input {
+    font-size: 1rem;
+    line-height: 22px;
+    padding: 0 5px;
+    font-family: monospace;
+  }
+  textarea {
+    font-size: 1rem;
+    padding: 5px 5px;
+  }
+}
+/* icons */
 .icon {
   vertical-align: middle;
   width: 50px;
@@ -149,12 +254,12 @@ h2.warn {
 .navigation {
   background-color: #ddd;
   width: 100%;
-  height: 50px;
+  height: 100%;
   text-align: left;
   padding: 0 10px;
+  line-height: 50px;
 }
 .navigation * {
-  line-height: 50px;
   margin: 0 10px;
   cursor: pointer;
 }

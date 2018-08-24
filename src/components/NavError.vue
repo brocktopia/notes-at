@@ -1,5 +1,5 @@
 <template>
-  <div id="navError">
+  <div class="app-container" id="navError">
 
     <header>
       <h2>About Geocoded Notebooks</h2>
@@ -11,6 +11,7 @@
     </div>
 
     <div class="navigation">
+      <router-link to="/">Home</router-link>
       <router-link to="/notebooks">Notebooks</router-link>
     </div>
 

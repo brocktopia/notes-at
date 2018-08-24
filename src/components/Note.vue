@@ -1,13 +1,16 @@
 <template>
-  <div>
+  <div class="app-container">
 
     <header>
       <h2>{{note.name}}</h2>
-      <svg class="icon action-icon" @click="closeNote()"><use xlink:href="./dist/symbols.svg#close-note"></use></svg>
-      <svg v-if="!showNoteMap" class="icon action-icon" @click="showMap()"><use xlink:href="./dist/symbols.svg#map"></use></svg>
-      <svg v-if="showNoteMap" class="icon action-icon" @click="showNote()"><use xlink:href="./dist/symbols.svg#note"></use></svg>
-      <svg class="icon action-icon" @click="editNote()"><use xlink:href="./dist/symbols.svg#edit-note"></use></svg>
-      <svg class="icon action-icon" @click="deleteNote()"><use xlink:href="./dist/symbols.svg#delete-note"></use></svg>
+      <span class="button-bar">
+        <svg class="icon" @click="deleteNote()"><use xlink:href="./dist/symbols.svg#delete-note"></use></svg>
+        <svg class="desktop-only icon" @click="editNote()"><use xlink:href="./dist/symbols.svg#edit-note"></use></svg>
+        <svg class="mobile-only icon" @click="editNoteMobile()"><use xlink:href="./dist/symbols.svg#edit-note"></use></svg>
+        <svg v-if="showNoteMap" class="icon" @click="showNote()"><use xlink:href="./dist/symbols.svg#note"></use></svg>
+        <svg v-if="!showNoteMap" class="icon" @click="showMap()"><use xlink:href="./dist/symbols.svg#map"></use></svg>
+        <svg class="icon" @click="closeNote()"><use xlink:href="./dist/symbols.svg#close-note"></use></svg>
+      </span>
     </header>
 
     <div v-if="!showNoteMap" class="content">
@@ -15,22 +18,26 @@
       <div class="date">{{$moment(note.date).format('LLLL')}}</div>
 
       <div class="geocoords" v-if="note.place && note.place.name">
-        <label for="placeName">
-          <img :src="note.place.icon" width="24" height="24" />
-        </label>
+        <img :src="note.place.icon" class="icon-tiny" />
         <span id="placeName">{{note.place.name}}</span>
-        <a :href="note.place.url" target="_blank">
+        <a :href="note.place.url" target="_blank" style="display: inline-block; vertical-align: middle;">
           <svg class="icon-tiny"><use xlink:href="./dist/symbols.svg#launch"></use></svg>
         </a>
       </div>
 
       <div class="geocoords">
-        <a @click="showMap()" style="cursor: pointer;">
-          <svg class="icon-tiny location-icon"><use xlink:href="./dist/symbols.svg#my-location"></use></svg>
+        <a @click="showMap()">
+          <svg class="icon-tiny" style="vertical-align: text-bottom;"><use xlink:href="./dist/symbols.svg#my-location"></use></svg>
           {{note.geocode.lat +', '+note.geocode.lng}}
         </a>
       </div>
       <p class="note">{{note.note}}</p>
+    </div>
+
+    <div class="navigation">
+      <a @click="closeNote()">Back to Notebook</a>
+      <a style="float:right;" @click="nextNote()">Next &gt;</a>
+      <a style="float:right;" @click="previousNote()">&lt; Previous</a>
     </div>
 
     <gmap-map
@@ -45,12 +52,6 @@
         :position="google && new google.maps.LatLng(geoLat, geoLon)"
       />
     </gmap-map>
-
-    <div class="navigation">
-      <a @click="closeNote()">Back to Notebook</a>
-      <a style="float:right;" @click="nextNote()">Next Note &gt;</a>
-      <a style="float:right;" @click="previousNote()">&lt; Previous Note</a>
-    </div>
 
     <!-- Dynamically loaded content -->
 
@@ -115,6 +116,10 @@
         //console.log('Note.editNote()');
         vm.$emit('edit');
       },
+      editNoteMobile:function() {
+        console.log('Note.editNoteMobile()');
+        vm.$emit('editmobile');
+      },
       closeNote:function() {
         //console.log('Note.closeNote()');
         vm.$emit('close');
@@ -161,7 +166,7 @@
     padding: 20px;
   }
   .content > div {
-    margin: 6px 0;
+    margin: 10px 0;
   }
   .geocoords img {
     vertical-align: middle;
@@ -171,5 +176,8 @@
   }
   a svg {
     fill: #42b983;
+  }
+  .navigation a {
+    display: inline-block;
   }
 </style>

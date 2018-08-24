@@ -1,7 +1,7 @@
 <template>
-  <div class="app-container">
+  <div>
 
-    <div v-if="activeView === 'notebook'">
+    <div class="app-container" v-if="activeView === 'notebook'">
 
       <header>
         <h2>{{notebook.name}}</h2>
@@ -9,13 +9,15 @@
           <svg class="icon" @click="deleteNotebook()"><use xlink:href="./dist/symbols.svg#delete-note"></use></svg>
           <svg class="icon" @click="editNotebook()"><use xlink:href="./dist/symbols.svg#edit-note"><title>Edit Notebook</title></use></svg>
           <svg class="icon" @click="showMap()"><use xlink:href="./dist/symbols.svg#map"></use></svg>
-          <svg class="icon" @click="addNote()"><use xlink:href="./dist/symbols.svg#add-note"></use></svg>
+          <svg class="desktop-only icon" @click="addNote()"><use xlink:href="./dist/symbols.svg#add-note"></use></svg>
+          <svg class="mobile-only icon" @click="addNoteMobile()"><use xlink:href="./dist/symbols.svg#add-note"></use></svg>
         </span>
       </header>
 
       <div class="content">
         <ul class="notebook">
-          <li v-for="note in notebook.notes" @click="noteSelect(note)">
+
+          <li v-for="note in notebook.notes" class="note-item" @click="noteSelect(note)">
             <span class="title">{{note.name}}</span><br/>
             <span class="date">{{$moment(note.Created_date).format('ddd l h:mm:ss a')}}</span>
             <span v-if="!note.place || !note.place.name" class="geocoords">
@@ -29,6 +31,7 @@
             <br clear="all"/>
             <span class="note">{{note.note.length > 84 ? note.note.substr(0,84) + '...' : note.note}}</span>
           </li>
+
         </ul>
         <div class="notebook-message">{{message}}</div>
       </div>
@@ -48,6 +51,7 @@
       v-on:edit="editNotebook"
       v-on:delete="deleteNotebook"
       v-on:addNote="addNote"
+      v-on:addNoteMobile="addNoteMobile"
       v-on:select="noteSelect"
     ></notebook-map>
 
@@ -77,13 +81,14 @@
 
     <modal-dialog v-if="showMessage" @close="showMessage = false">
       <h3 :class="messageClass" slot="header">{{messageTitle}}</h3>
-      <div slot="body">{{messageBody}}</div>
+      <div slot="body" v-html="messageBody"></div>
     </modal-dialog>
 
     <note-view
       v-if="activeView === 'note'"
       :note="activeNote"
       v-on:edit="editNote"
+      v-on:editmobile="editNoteMobile"
       v-on:close="closeNote"
       v-on:delete="deleteNote"
       v-on:next="nextNote"
@@ -91,24 +96,26 @@
     ></note-view>
 
     <note-edit
-      v-if="activeView === 'note-new'"
-      :note="activeNote"
-      :mode="'new'"
-      v-on:save="saveNoteNew"
-      v-on:close="closeNoteNew"
-      v-on:latlon="updateNoteGeocode"
-      v-on:place="updateNotePlace"
-    ></note-edit>
-
-    <note-edit
       v-if="activeView === 'note-edit'"
       :note="activeNote"
-      :mode="'edit'"
+      :mode="noteEditMode"
       v-on:save="saveNote"
+      v-on:close="closeNoteNew"
       v-on:cancel="cancelNoteEdit"
       v-on:latlon="updateNoteGeocode"
       v-on:place="updateNotePlace"
     ></note-edit>
+
+    <note-edit-mobile
+      v-if="activeView === 'note-edit-mobile'"
+      :note="activeNote"
+      :mode="noteEditMode"
+      v-on:save="saveNote"
+      v-on:close="closeNoteNew"
+      v-on:cancel="cancelNoteEdit"
+      v-on:latlon="updateNoteGeocode"
+      v-on:place="updateNotePlace"
+    ></note-edit-mobile>
 
     <div class="loading-mask" v-if="isLoading"><span>{{loadingMessage}}</span></div>
 
@@ -121,13 +128,14 @@
   import NotebookMap from './NotebookMap'
   import NoteView from './Note'
   import NoteEdit from './NoteEdit'
+  import NoteEditMobile from './NoteEditMobile'
   import {GmapMap} from 'vue2-google-maps'
 
   var vm;
   export default {
 
     components: {
-      NoteView, NoteEdit, ModalDialog, EditNotebookDialog, NotebookMap
+      NoteView, NoteEdit, NoteEditMobile, ModalDialog, EditNotebookDialog, NotebookMap
     },
 
     data: function() {
@@ -141,6 +149,7 @@
         messageClass: 'notify',
         messageTitle: '',
         messageBody: '',
+        noteEditMode: '',
         showConfirmModal: false,
         showEditNotebook:false,
         isLoading: true,
@@ -170,19 +179,29 @@
             if (vm.$route.name === 'notebook-note') {
               vm.activeView = 'note';
             } else if (vm.$route.name === 'notebook-note-edit') {
+              vm.noteEditMode = 'edit';
               vm.activeView = 'note-edit';
+            } else if (vm.$route.name === 'notebook-note-edit-mobile') {
+              vm.noteEditMode = 'edit';
+              vm.activeView = 'note-edit-mobile';
             }
           }
           else if (vm.$route.name === 'notebook-note-new') {
             vm.activeNote = vm.getNoteTemplate();
-            vm.activeView = 'note-new';
+            vm.noteEditMode = 'new';
+            vm.activeView = 'note-edit';
+          }
+          else if (vm.$route.name === 'notebook-note-new-mobile') {
+            vm.activeNote = vm.getNoteTemplate();
+            vm.noteEditMode = 'new';
+            vm.activeView = 'note-edit-mobile';
           }
           else if (vm.$route.name === 'notebook-map') {
             vm.notebookRouteExtra = '/map';
             vm.activeView = 'map';
           }
         })
-        .catch(error => console.log(error));
+        .catch(vm.handleError) ;
       // Get google reference
       vm.$gmapApiPromiseLazy().then((google) => {
         vm.google = google;
@@ -216,10 +235,25 @@
         }
         else if (toRoute.name === 'notebook-note-new') { // notebook new note
           vm.activeNote = vm.getNoteTemplate();
-          vm.activeView = 'note-new'
+          vm.noteEditMode = 'new';
+          vm.activeView = 'note-edit'
+        }
+        else if (toRoute.name === 'notebook-note-new-mobile') { // notebook new note for mobile
+          vm.activeNote = vm.getNoteTemplate();
+          vm.noteEditMode = 'new';
+          vm.activeView = 'note-edit-mobile'
         }
         else if (toRoute.name === 'notebook-note-edit') { // notebook edit note
-          if (vm.setActiveNote(segments[4])) vm.activeView = 'note-edit';
+          if (vm.setActiveNote(segments[4])) {
+            vm.noteEditMode = 'edit';
+            vm.activeView = 'note-edit';
+          }
+        }
+        else if (toRoute.name === 'notebook-note-edit-mobile') { // notebook edit note for mobile
+          if (vm.setActiveNote(segments[4])) {
+            vm.noteEditMode = 'edit';
+            vm.activeView = 'note-edit-mobile';
+          }
         }
         else {
           console.warn('Notebook.$route() Unhandled route');
@@ -286,12 +320,20 @@
         vm.$router.push('/notebook/'+vm.notebook._id+'/note/'+vm.activeNote._id);
       },
       editNote: function() {
-        console.log('Notebook.editNote()');
+        //console.log('Notebook.editNote()');
         vm.$router.push('/notebook/'+vm.notebook._id+'/note-edit/'+vm.activeNote._id);
+      },
+      editNoteMobile: function() {
+        //console.log('Notebook.editNoteMobile()');
+        vm.$router.push('/notebook/'+vm.notebook._id+'/note-edit-mobile/'+vm.activeNote._id);
       },
       addNote: function() {
         //console.log('Notebook.addNote()');
         vm.$router.push('/notebook/'+vm.notebook._id+'/note-new');
+      },
+      addNoteMobile: function() {
+        //console.log('Notebook.addNoteMobile()');
+        vm.$router.push('/notebook/'+vm.notebook._id+'/note-new-mobile');
       },
       closeNote: function() {
         //console.log('Notebook.closeNote()');
@@ -320,7 +362,8 @@
               console.dir(res.data);
             }
             vm.isLoading = false;
-        });
+          })
+          .catch(vm.handleError);
       },
       showMap: function() {
         //console.log('Notebook.showMap()');
@@ -346,7 +389,7 @@
             vm.isLoading = false;
             vm.showEditNotebook = false;
           })
-          .catch(error => console.log(error));
+          .catch(vm.handleError);
       },
       deleteNotebook: function() {
         //console.log('Notebook.deleteNotebook()');
@@ -370,7 +413,8 @@
               console.warn('Notebook.confirmDelete() Error deleting notebook');
               console.dir(res.data);
             }
-          });
+          })
+          .catch(vm.handleError);
       },
       updateNotes: function() {
         //console.log('Notebook.updateNotes()');
@@ -389,7 +433,8 @@
               vm.message = 'No notes in this notebook.';
             }
             vm.isLoading = false;
-          });
+          })
+          .catch(vm.handleError);
       },
 
       // Note edit methods
@@ -398,40 +443,67 @@
           name:'',
           Created_data: new Date(),
           geocode: {
-            lat:'...',
-            lng:'...'
+            lat:0,
+            lng:0
           },
           note:''
         }
-      },
-      saveNoteNew: function() {
-        //console.log('Notebook.saveNoteNew()');
-        vm.loadingMessage = 'Saving Note...';
-        vm.isLoading = true;
-        vm.$axios.post('/notes/'+vm.notebook._id, vm.activeNote)
-          .then(function(res) {
-            // confirm new note
-            if (res.data._id) {
-              vm.activeNote = res.data;
-              vm.$router.push('/notebook/'+vm.notebook._id+'/note/'+vm.activeNote._id);
-              vm.updateNotes();
-            } else {
-              console.warn('saveNoteNew() Missing note data');
-              console.dir(res.data);
-              vm.isLoading = false;
-            }
-          });
       },
       saveNote: function() {
         //console.log('Notebook.saveNote()');
         vm.loadingMessage = 'Saving Note...';
         vm.isLoading = true;
-        vm.$axios.put('/notes/note/'+vm.activeNote._id, vm.activeNote)
-          .then(function(res) {
-            // Error checking...
-            vm.isLoading = false;
-            vm.$router.push('/notebook/'+vm.notebook._id+'/note/'+vm.activeNote._id);
-          });
+        if (vm.noteEditMode === 'edit') {
+          vm.$axios.put('/notes/note/'+vm.activeNote._id, vm.activeNote)
+            .then(function(res) {
+              // Error checking...
+              vm.isLoading = false;
+              vm.$router.push('/notebook/'+vm.notebook._id+'/note/'+vm.activeNote._id);
+            })
+            .catch(vm.handleError);
+        } else if (vm.noteEditMode === 'new') {
+          vm.$axios.post('/notes/'+vm.notebook._id, vm.activeNote)
+            .then(function(res) {
+              // confirm new note
+              if (res.data._id) {
+                vm.activeNote = res.data;
+                vm.$router.push('/notebook/'+vm.notebook._id+'/note/'+vm.activeNote._id);
+                vm.updateNotes();
+              } else {
+                vm.handleError(res.data);
+              }
+            })
+            .catch(vm.handleError);
+        }
+
+      },
+      handleError: function(err) {
+        console.warn('Notebook.handleError()');
+        console.dir(err);
+        vm.isLoading = false;
+        vm.messageClass = 'warn';
+        if (err.message === 'Network Error') {
+          vm.messageTitle = 'Network Error';
+          vm.messageBody = 'There was a problem connecting to application services. Please try again. If the problem persist, please contact support.';
+        } else if (err.message.indexOf('validation failed') != -1) {
+          // show user message
+          let msg = err.message,
+            title = msg.substr(0, msg.indexOf(':')),
+            msgBody = msg.slice(msg.indexOf(':') + 2);
+          vm.messageTitle = title;
+          vm.messageBody = '';
+          if (msgBody.indexOf(',')) {
+            msgBody.split(',').forEach(part => {
+              vm.messageBody += part.slice(part.indexOf(':') + 2) + '<br/>';
+            });
+          } else {
+            vm.messageBody += msgBody.slice(msgBody.indexOf(':') + 2);
+          }
+        } else {
+          vm.messageTitle = 'Unknown Error';
+          vm.messageBody = 'There was an unknown problem. Please try again. If the problem persist, please contact support.';
+        }
+        vm.showMessage = true;
       },
       deleteNote: function() {
         //console.log('Notebook.deleteNote()');
@@ -488,26 +560,43 @@
     text-align: left;
     cursor: pointer;
   }
+  ul.notebook li span {
+    display: inline-block;
+  }
   .notebook-message {
     margin: 20px;
   }
   .date, .note {
     font-size: smaller;
   }
-  .geocoords {
+  .title {
+    margin-bottom: 8px;
+  }
+  .note {
+    margin-top: 8px;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .geocoords, .place {
     float: right;
-    color: #6666ff;
     font-size: smaller;
+    width: 60%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .geocoords {
+    color: #4e7eef;
   }
   .location-icon {
     fill: #4e7eef;
   }
+  .place {
+    color: #666;
+  }
   .place-icon {
     fill: #ed453b;
-  }
-  .place {
-    float: right;
-    color: #666;
-    font-size: smaller;
   }
 </style>

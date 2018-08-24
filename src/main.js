@@ -14,15 +14,23 @@ Vue.use(VueGoogleMaps, {
   }
 });
 
-let baseUrl = window.location.protocol + '//' + window.location.host;
-if (baseUrl.lastIndexOf(':') > 6) { // strip port # off of baseUrl
-  baseUrl = baseUrl.substr(0, baseUrl.lastIndexOf(':'));
+let servicePort,
+  serviceUrl = window.location.protocol + '//' + window.location.host;
+if (serviceUrl.lastIndexOf(':') > 6) { // strip port # off of serviceUrl
+  serviceUrl = serviceUrl.substr(0, serviceUrl.lastIndexOf(':'));
 }
-//console.log('main.js baseUrl ['+baseUrl+']');
+// determine port based on ssl
+if (window.location.protocol.indexOf('https') != -1) {
+  // IMPORTANT - This requires the use of server-ssl.js. server.js doesn't listen for port 3031
+  servicePort = ':3031/'
+} else {
+  servicePort = ':3030/';
+}
+console.log('main.js serviceUrl [' + serviceUrl + servicePort + ']');
 
 Vue.prototype.$axios = axios.create({
-  baseURL: baseUrl + ':3030'
-  // baseURL: baseUrl + '/apiservices/'
+  baseURL: serviceUrl + servicePort
+  // baseURL: serviceUrl + '/apiservices/'
   /*
      For local development under Apache I configured a proxypass to point to /apiservices/
      <VirtualHost *:80>

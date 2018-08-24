@@ -52,5 +52,6 @@
   .create-notebook {
     display: block;
     margin: 30px auto;
+    padding: 0.5rem 1.5rem;
   }
 </style>
