@@ -6,10 +6,15 @@
   "license": "MIT",
   "private": true,
   "browser": "./src/main.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/brocktopia/notes-at.git"
+  },
   "scripts": {
     "dev": "cross-env NODE_ENV=development webpack-dev-server --open --hot",
     "build": "cross-env NODE_ENV=production webpack --progress --hide-modules",
-    "build-dev": "cross-env NODE_ENV=development webpack --progress --hide-modules"
+    "build-dev": "cross-env NODE_ENV=development webpack --progress --hide-modules",
+    "start": "nodemon api/server.js"
   },
   "dependencies": {
     "axios": "^0.18.0",
@@ -41,8 +46,5 @@
     "vue-template-compiler": "^2.4.4",
     "webpack": "^3.6.0",
     "webpack-dev-server": "^2.9.1"
-  },
-  "tasks": {
-    "start": "nodemon server.js"
   }
 }

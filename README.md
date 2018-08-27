@@ -65,8 +65,7 @@ npm run dev
 * [Google Places Service API Reference](https://developers.google.com/maps/documentation/javascript/reference/places-service)
 
 ## To-Do Roadmap
-* Pull reusable styles out of .vue files. 
-* Improve mobile UX
+* Create a version of this app using LocalStorage
 * Incorporate [Vuex](https://vuex.vuejs.org/)
 * Incorporate unit and e2e testing
 * Put it up on [Firebase](https://firebase.google.com/) behind authentications and with user accounts

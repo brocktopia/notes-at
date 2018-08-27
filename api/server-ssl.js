@@ -15,12 +15,12 @@ var express = require('express'),
   app = express(),
   port = process.env.PORT || 3030,
   sslPort = 3031,
-  privateKey = fs.readFileSync('api/key/YOUR_PRIVATE_KEY.key'),
-  certificate = fs.readFileSync('api/key/YOUR_CERTIFICATE.crt'),
+  privateKey = fs.readFileSync('key/YOUR_PRIVATE_KEY.key'),
+  certificate = fs.readFileSync('key/YOUR_CERTIFICATE.crt'),
   dbName = 'NotesAtDB',
   mongoose = require('mongoose'),
-  Notebook = require('./api/models/notebookModel'),
-  Note = require('./api/models/noteModel');
+  Notebook = require('./models/notebookModel'),
+  Note = require('./models/noteModel');
 
 // mongoose instance connection url connection
 mongoose.Promise = global.Promise;
@@ -46,7 +46,7 @@ app.use(function (req, res, next) {
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-var routes = require('./api/routes/appRoutes'); // importing route
+var routes = require('./routes/appRoutes'); // importing route
 routes(app);
 
 // Catch 404 errors

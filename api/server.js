@@ -1,14 +1,14 @@
 // Got started with: https://www.codementor.io/olatundegaruba/nodejs-restful-apis-in-10-minutes-q0sgsfhbd
 
-process.env.NODE_ENV = 'production';
+process.env.NODE_ENV = 'development';
 
 var express = require('express'),
   app = express(),
   port = process.env.PORT || 3030,
   dbName = 'NotesAtDB',
   mongoose = require('mongoose'),
-  Notebook = require('./api/models/notebookModel'),
-  Note = require('./api/models/noteModel');
+  Notebook = require('./models/notebookModel'),
+  Note = require('./models/noteModel');
 
 // mongoose instance connection url connection
 mongoose.Promise = global.Promise;
@@ -34,7 +34,7 @@ app.use(function (req, res, next) {
 app.use(express.urlencoded({extended: true}));
 app.use(express.json());
 
-var routes = require('./api/routes/appRoutes'); // importing route
+var routes = require('./routes/appRoutes'); // importing route
 routes(app);
 
 // Catch 404 errors
