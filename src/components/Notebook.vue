@@ -441,7 +441,7 @@
       getNoteTemplate: function() {
         return {
           name:'',
-          Created_data: new Date(),
+          Created_date: new Date(),
           geocode: {
             lat:0,
             lng:0
