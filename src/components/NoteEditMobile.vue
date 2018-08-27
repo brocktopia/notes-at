@@ -97,7 +97,23 @@
   </div>
 </template>
 
-<script src="./EditNoteImpl.js"></script>
+<script>
+  /*
+    I created this file as a way to test branching views based on mobile/desktop. Originally,
+    I was just linking this file and NoteEdit.vue to the external script via the src attribute
+    of the script tag. This didn't work and this view was overriding the NoteEdit component because
+    it's module was being imported after NoteEdit. Got help showing me the right way to do this
+    using the extends for composition. Would probably make more sense to just move the templating
+    out of this file into NoteEdit and do my CSS branching in that file, but since it makes a nice
+    example of using composition, I'm going to leave it.
+  */
+  import EditNoteImpl from './EditNoteImpl'
+
+  export default {
+    name: 'EditNoteMobile',
+    extends: EditNoteImpl
+  }
+</script>
 
 <style scoped>
   .app-container.edit .name-edit {

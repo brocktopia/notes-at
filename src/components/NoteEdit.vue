@@ -77,7 +77,14 @@
   </div>
 </template>
 
-<script src="./EditNoteImpl.js"></script>
+<script>
+  import EditNoteImpl from './EditNoteImpl'
+
+  export default {
+    name: 'EditNote',
+    extends: EditNoteImpl
+  }
+</script>
 
 <style scoped>
   span.no-place {
