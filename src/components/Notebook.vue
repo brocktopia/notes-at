@@ -17,7 +17,12 @@
       <div class="content">
         <ul class="notebook">
 
-          <li v-for="note in notebook.notes" class="note-item" @click="noteSelect(note)">
+          <li
+            v-for="note in notebook.notes"
+            :key="note._id"
+            class="note-item"
+            @click="noteSelect(note)"
+          >
             <span class="title">{{note.name}}</span><br/>
             <span class="date">{{$moment(note.Created_date).format('ddd l h:mm:ss a')}}</span>
             <span v-if="!note.place || !note.place.name" class="geocoords">

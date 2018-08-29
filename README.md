@@ -71,6 +71,11 @@ npm run dev
 * Put it up on [Firebase](https://firebase.google.com/) behind authentications and with user accounts
 * Implement as Progressive Web App
 
+## Done
+Created a version of the app using IndexedDB for data storage. Check that project out 
+[here](https://github.com/brocktopia/notes-at-idb) and see a sample of that version 
+of the app [here](https://brocktopia.com/notes-at/).
+
 ## Author
 Brock Henderson [@brocktopia](https://github.com/brocktopia/) ||
 [brocktopia.com](https://brocktopia.com)

@@ -4,13 +4,18 @@
     <header>
       <h2>Notebooks</h2>
       <span class="button-bar">
-        <svg class="icon" v-on:click="addNotebook()"><use xlink:href="./dist/symbols.svg#add-item"></use></svg>
+        <svg class="icon" @click="addNotebook()"><use xlink:href="./dist/symbols.svg#add-item"></use></svg>
       </span>
     </header>
 
     <div class="content">
       <ul class="notebooks">
-        <li v-for="notebook in notebooks" class="list-item" v-on:click="notebookSelect(notebook)">
+        <li
+          v-for="notebook in notebooks"
+          :key="notbook._id"
+          class="list-item"
+          @click="notebookSelect(notebook)"
+        >
           <span class="list-item-name">{{notebook.name}}</span>
           <span class="notebook-date">{{$moment(notebook.Created_date).format("l")}}</span>
         </li>
@@ -27,8 +32,8 @@
       v-if="showNewNotebook"
       :mode="'create'"
       :notebook="notebookBaseObj"
-      v-on:save="saveNewNotebook"
-      v-on:close="cancelNewNotebook"
+      @save="saveNewNotebook"
+      @close="cancelNewNotebook"
     ></edit-notebook-dialog>
 
   </div>
