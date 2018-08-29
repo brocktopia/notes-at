@@ -65,7 +65,6 @@ npm run dev
 * [Google Places Service API Reference](https://developers.google.com/maps/documentation/javascript/reference/places-service)
 
 ## To-Do Roadmap
-* Create a version of this app using LocalStorage
 * Incorporate [Vuex](https://vuex.vuejs.org/)
 * Incorporate unit and e2e testing
 * Put it up on [Firebase](https://firebase.google.com/) behind authentications and with user accounts
@@ -74,7 +73,7 @@ npm run dev
 ## Done
 Created a version of the app using IndexedDB for data storage. Check that project out 
 [here](https://github.com/brocktopia/notes-at-idb) and see a sample of that version 
-of the app [here](https://brocktopia.com/notes-at/).
+of the app [here](https://brocktopia.com/notes-at/). First step on the path to turning it into a prorgressive web app.
 
 ## Author
 Brock Henderson [@brocktopia](https://github.com/brocktopia/) ||
