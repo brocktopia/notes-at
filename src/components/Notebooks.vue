@@ -12,7 +12,7 @@
       <ul class="notebooks">
         <li
           v-for="notebook in notebooks"
-          :key="notbook._id"
+          :key="notebook._id"
           class="list-item"
           @click="notebookSelect(notebook)"
         >
