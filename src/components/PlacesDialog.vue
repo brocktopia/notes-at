@@ -23,11 +23,11 @@
         </div>
 
         <div class="modal-footer">
-          <button v-if="showMore" class="modal-optional-botton" @click="$emit('more')">
-            More Results
-          </button>
-          <button class="modal-default-button" @click="$emit('close')">
+          <button class="modal-optional-button" @click="$emit('close')">
             Cancel
+          </button>
+          <button v-if="showMore" class="modal-default-button" @click="$emit('more')">
+            More Results
           </button>
         </div>
 

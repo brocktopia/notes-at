@@ -344,8 +344,11 @@ button:active {
     .modal-default-button {
       float: right;
     }
-    .modal-optional-botton {
+    .modal-optional-button {
       float: left;
+      color: #0069ed;
+      background-color: #fff;
+      border: 2px solid #0069ed;
     }
     .modal-enter {
       opacity: 0;
