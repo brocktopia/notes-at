@@ -22,7 +22,7 @@
     "express": "^4.21.2",
     "moment": "^2.29.2",
     "mongoose": "^6.13.6",
-    "vue": "^2.6.11",
+    "vue": "^3.0.0",
     "vue-router": "^3.3.2",
     "vue2-google-maps": "^0.10.7"
   },
